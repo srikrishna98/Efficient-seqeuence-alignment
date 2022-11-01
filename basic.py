@@ -1,4 +1,5 @@
 from collections import defaultdict
+from curses.ascii import isalpha, isdigit
 
 deltaPenalty = 30
 
@@ -13,4 +14,30 @@ def getPenalty(char1: str, char2: str):
     return penalty[char1][char2]
 
 
-print(getPenalty('A', 'C'))
+def ipGenerator(fileName: str):
+    fileObj = open(fileName, "r")
+    processedInput = []
+    inp = ""
+    while (True):
+        line = fileObj.readline()
+        if not line:
+            processedInput.append(inp)
+            break
+        line = line.strip()
+
+        if (line.isdigit()):
+            ind = int(line)
+            tempFirst = inp[0:ind+1]
+            tempEnd = inp[ind+1:]
+            inp = tempFirst + inp + tempEnd
+        else:
+            processedInput.append(inp)
+            inp = str(line)
+
+    return processedInput[1:]
+
+
+# print(ipGenerator("./input/input1.txt"))
+
+
+# print(getPenalty('A', 'C'))
