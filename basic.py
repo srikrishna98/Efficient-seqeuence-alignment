@@ -41,6 +41,7 @@ def dpSequenceAlign(filename: str):
     s1, s2 = ipGenerator(filename)
     len1 = len(s1)
     len2 = len(s2)
+    print(s1, s2)
     dp = [[0]*(len1+1) for _ in range(len2+1)]
     for i in range(1, len1+1):
         dp[0][i] = i*deltaPenalty
@@ -50,7 +51,43 @@ def dpSequenceAlign(filename: str):
         for j in range(1, len1+1):
             dp[i][j] = min(dp[i-1][j-1]+getPenalty(s1[j-1], s2[i-1]),
                            dp[i-1][j]+deltaPenalty, dp[i][j-1]+deltaPenalty)
-    return dp[len1][len2]
+    seq1, seq2 = getSequence(dp, s1, s2)
+    return dp[len2][len1], seq1, seq2
+
+
+def getSequence(dp, s1: str, s2: str):
+    len1 = len(s1)
+    len2 = len(s2)
+    seq1 = ""
+    seq2 = ""
+    i = len2
+    j = len1
+    while (i > 0 and j > 0):
+        if (dp[i][j] - getPenalty(s1[j-1], s2[i-1]) == dp[i-1][j-1]):
+            seq1 = s1[j-1] + seq1
+            seq2 = s2[i-1] + seq2
+            i -= 1
+            j -= 1
+        elif (dp[i][j] - deltaPenalty == dp[i-1][j]):
+            seq1 = "_" + seq1
+            seq2 = s2[i-1] + seq2
+            i -= 1
+        elif (dp[i][j] - deltaPenalty == dp[i][j-1]):
+            seq1 = s1[j-1] + seq1
+            seq2 = "_" + seq2
+            j -= 1
+
+    while j != 0:
+        seq2 = '_' + seq2
+        seq1 = s1[j-1] + seq1
+        j -= 1
+
+    while i != 0:
+        seq1 = '_' + seq1
+        seq2 = s2[i-1] + seq2
+        i -= 1
+
+    return seq1, seq2
 
 
 print(dpSequenceAlign("./input/input1.txt"))
