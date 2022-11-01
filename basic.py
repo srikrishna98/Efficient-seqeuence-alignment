@@ -37,6 +37,23 @@ def ipGenerator(fileName: str):
     return processedInput[1:]
 
 
+def dpSequenceAlign(filename: str):
+    s1, s2 = ipGenerator(filename)
+    len1 = len(s1)
+    len2 = len(s2)
+    dp = [[0]*(len1+1) for _ in range(len2+1)]
+    for i in range(1, len1+1):
+        dp[0][i] = i*deltaPenalty
+    for i in range(1, len2+1):
+        dp[i][0] = i*deltaPenalty
+    for i in range(1, len2+1):
+        for j in range(1, len1+1):
+            dp[i][j] = min(dp[i-1][j-1]+getPenalty(s1[j-1], s2[i-1]),
+                           dp[i-1][j]+deltaPenalty, dp[i][j-1]+deltaPenalty)
+    return dp[len1][len2]
+
+
+print(dpSequenceAlign("./input/input1.txt"))
 # print(ipGenerator("./input/input1.txt"))
 
 
