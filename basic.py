@@ -3,18 +3,16 @@ from resource import *
 import time
 import psutil
 import sys
+import os
 
+def get_process_memory():
+    process_mem = psutil.Process(os.getpid())
+    return process_mem.memory_info().rss
 
 class basicSeqAl:
-    def process_memory(self):
-        process = psutil.Process()
-        memory_info = process.memory_info()
-        memory_consumed = int(memory_info.rss/1024)
-        return memory_consumed
-
     def time_wrapper(self, ipFileName):
         s1, s2 = self.ipGenerator(ipFileName)
-        print(len(s1)+len(s2))
+        print("length of input: " + str(len(s1)+len(s2)))
         start_time = time.time()
         dp = self.dpSequenceAlign(s1, s2)
         sequence = self.getSequence(dp, s1, s2)
@@ -117,12 +115,13 @@ class basicSeqAl:
             seq1 = '_' + seq1
             seq2 = s2[i-1] + seq2
             i -= 1
-
         return seq1, seq2
 
 
 if __name__ == "__main__":
+    memory_usage_before = get_process_memory()
     obj = basicSeqAl()
     time = obj.time_wrapper(sys.argv[1])
-    print(time)
-    print(obj.process_memory())
+    memory_usage_after = get_process_memory()
+    print("time: " + str(time))
+    print("memory: " +  str(float(memory_usage_after - memory_usage_before)/1024.0))

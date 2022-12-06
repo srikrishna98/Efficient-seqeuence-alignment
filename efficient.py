@@ -3,23 +3,23 @@ from resource import *
 import time
 import psutil
 import sys
+import os
 
 
 class EfficientSeqAl:
-    def process_memory(self):
-        process = psutil.Process()
-        memory_info = process.memory_info()
-        memory_consumed = int(memory_info.rss/1024)
-        return memory_consumed
+    def get_process_memory(self):
+        process_mem = psutil.Process(os.getpid())
+        return process_mem.memory_info().rss
 
     def time_wrapper(self, ipFileName):
         s1, s2 = self.ipGenerator(ipFileName)
+        print("length of input: " + str(len(s1)+len(s2)))
         start_time = time.time()
         ans = self.divAndConq(s1, s2)
         end_time = time.time()
-        print(ans[2])
-        print(ans[0])
-        print(ans[1])
+        #print(ans[2])
+        #print(ans[0])
+        #print(ans[1])
         time_taken = (end_time - start_time)*1000
         return time_taken
 
@@ -146,7 +146,9 @@ class EfficientSeqAl:
 
 
 if __name__ == "__main__":
+    memory_usage_before = obj.get_process_memory()
     obj = EfficientSeqAl()
     time = obj.time_wrapper(sys.argv[1])
-    print(time)
-    print(obj.process_memory())
+    memory_usage_after = obj.get_process_memory()
+    print("time: " + str(time))
+    print("memory: " +  str(float((memory_usage_after - memory_usage_before)/1024)))
