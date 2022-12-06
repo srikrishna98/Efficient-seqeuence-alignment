@@ -5,14 +5,16 @@ import psutil
 import sys
 import os
 
+
 def get_process_memory():
     process_mem = psutil.Process(os.getpid())
     return process_mem.memory_info().rss
 
+
 class basicSeqAl:
     def time_wrapper(self, ipFileName):
         s1, s2 = self.ipGenerator(ipFileName)
-        print("length of input: " + str(len(s1)+len(s2)))
+        # print("length of input: " + str(len(s1)+len(s2)))
         start_time = time.time()
         dp = self.dpSequenceAlign(s1, s2)
         sequence = self.getSequence(dp, s1, s2)
@@ -123,5 +125,5 @@ if __name__ == "__main__":
     obj = basicSeqAl()
     time = obj.time_wrapper(sys.argv[1])
     memory_usage_after = get_process_memory()
-    print("time: " + str(time))
-    print("memory: " +  str(float(memory_usage_after - memory_usage_before)/1024.0))
+    # print("time: " + str(time))
+    print((memory_usage_after - memory_usage_before)//1024)
