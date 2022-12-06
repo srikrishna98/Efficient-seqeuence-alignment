@@ -2,6 +2,7 @@ from collections import defaultdict
 from resource import *
 import time
 import psutil
+import sys
 
 
 class EfficientSeqAl:
@@ -11,8 +12,8 @@ class EfficientSeqAl:
         memory_consumed = int(memory_info.rss/1024)
         return memory_consumed
 
-    def time_wrapper(self):
-        s1, s2 = self.ipGenerator("./input/input1.txt")
+    def time_wrapper(self, ipFileName):
+        s1, s2 = self.ipGenerator(ipFileName)
         start_time = time.time()
         ans = self.divAndConq(s1, s2)
         end_time = time.time()
@@ -146,6 +147,6 @@ class EfficientSeqAl:
 
 if __name__ == "__main__":
     obj = EfficientSeqAl()
-    time = obj.time_wrapper()
+    time = obj.time_wrapper(sys.argv[1])
     print(time)
     print(obj.process_memory())
