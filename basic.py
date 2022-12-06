@@ -14,14 +14,13 @@ def get_process_memory():
 class basicSeqAl:
     def time_wrapper(self, ipFileName):
         s1, s2 = self.ipGenerator(ipFileName)
-        # print("length of input: " + str(len(s1)+len(s2)))
         start_time = time.time()
         dp = self.dpSequenceAlign(s1, s2)
         sequence = self.getSequence(dp, s1, s2)
         end_time = time.time()
-        # print(dp[len(s2)-1][len(s1)-1])
-        # print(sequence[0])
-        # print(sequence[1])
+        print("cost of alignment: "+str(dp[len(s2)-1][len(s1)-1]))
+        print("S1: "+sequence[0])
+        print("S2: "+sequence[1])
         time_taken = (end_time - start_time)*1000
         return time_taken
 
@@ -125,5 +124,5 @@ if __name__ == "__main__":
     obj = basicSeqAl()
     time = obj.time_wrapper(sys.argv[1])
     memory_usage_after = get_process_memory()
-    # print("time: " + str(time))
-    print((memory_usage_after - memory_usage_before)//1024)
+    print("time in ms: " + str(time))
+    print(("memory in kb: " + str((memory_usage_after - memory_usage_before)//1024)))
