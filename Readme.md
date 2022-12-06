@@ -15,3 +15,8 @@
 # Take memory and time values from the corresponding values and plug them into the plt.py file
 
 Run `python3 plt.py` to generate the graph
+
+## memory Problem size:
+
+![M-PS](Memory-ProblemSize.png)
+![T-PS](Time-ProblemSize.png)
