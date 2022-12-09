@@ -4,6 +4,7 @@ import time
 import psutil
 import sys
 import os
+from pathlib import Path
 
 
 class EfficientSeqAl:
@@ -11,14 +12,14 @@ class EfficientSeqAl:
         process_mem = psutil.Process(os.getpid())
         return process_mem.memory_info().rss
 
-    def time_wrapper(self, ipFileName):
+    def time_wrapper(self, ipFileName, opFileName):
         s1, s2 = self.ipGenerator(ipFileName)
         start_time = time.time()
         ans = self.divAndConq(s1, s2)
         end_time = time.time()
-        print("cost of alignment: "+str(ans[2]))
-        print("S1: "+ans[0])
-        print("S2: "+ans[1])
+        write_to_op(opFileName, "cost of alignment: "+str(ans[2]))
+        write_to_op(opFileName, "S1: "+ans[0])
+        write_to_op(opFileName, "S2: "+ans[1])
         time_taken = (end_time - start_time)*1000
         return time_taken
 
@@ -144,10 +145,21 @@ class EfficientSeqAl:
         return [callLeft[r] + callRight[r] for r in range(3)]
 
 
+def write_to_op(opFileName, str):
+    obj = Path(opFileName)
+    fo = open(opFileName, "a")
+    fo.seek(0, 2)
+    fo.write(str+"\n")
+    fo.close()
+
+
 if __name__ == "__main__":
+    fo = open(sys.argv[2], "w")
+    fo.close()
     obj = EfficientSeqAl()
     memory_usage_before = obj.get_process_memory()
-    time = obj.time_wrapper(sys.argv[1])
+    time = obj.time_wrapper(sys.argv[1], sys.argv[2])
     memory_usage_after = obj.get_process_memory()
-    print("time in ms: " + str(time))
-    print("memory in kb: " + str((memory_usage_after - memory_usage_before)//1024))
+    write_to_op(sys.argv[2], "time in ms: " + str(time))
+    write_to_op(sys.argv[2], "memory in kb: " +
+                str((memory_usage_after - memory_usage_before)//1024))

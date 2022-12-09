@@ -4,6 +4,7 @@ import time
 import psutil
 import sys
 import os
+from pathlib import Path
 
 
 def get_process_memory():
@@ -11,16 +12,25 @@ def get_process_memory():
     return process_mem.memory_info().rss
 
 
+def write_to_op(opFileName, str):
+    obj = Path(opFileName)
+    fo = open(opFileName, "a")
+    fo.seek(0, 2)
+    fo.write(str+"\n")
+    fo.close()
+
+
 class basicSeqAl:
-    def time_wrapper(self, ipFileName):
+    def time_wrapper(self, ipFileName, opFileName):
         s1, s2 = self.ipGenerator(ipFileName)
         start_time = time.time()
         dp = self.dpSequenceAlign(s1, s2)
         sequence = self.getSequence(dp, s1, s2)
         end_time = time.time()
-        print("cost of alignment: "+str(dp[len(s2)-1][len(s1)-1]))
-        print("S1: "+sequence[0])
-        print("S2: "+sequence[1])
+        write_to_op(opFileName, "cost of alignment: " +
+                    str(dp[len(s2)-1][len(s1)-1]))
+        write_to_op(opFileName, "S1: "+sequence[0])
+        write_to_op(opFileName, "S2: "+sequence[1])
         time_taken = (end_time - start_time)*1000
         return time_taken
 
@@ -120,9 +130,12 @@ class basicSeqAl:
 
 
 if __name__ == "__main__":
+    fo = open(sys.argv[2], "w")
+    fo.close()
     memory_usage_before = get_process_memory()
     obj = basicSeqAl()
-    time = obj.time_wrapper(sys.argv[1])
+    time = obj.time_wrapper(sys.argv[1], sys.argv[2])
     memory_usage_after = get_process_memory()
-    print("time in ms: " + str(time))
-    print(("memory in kb: " + str((memory_usage_after - memory_usage_before)//1024)))
+    write_to_op(sys.argv[2], "time in ms: " + str(time))
+    write_to_op(sys.argv[2], ("memory in kb: " +
+                str((memory_usage_after - memory_usage_before)//1024)))

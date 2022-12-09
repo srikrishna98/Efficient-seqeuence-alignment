@@ -1,2 +1,2 @@
 # chmod +x basic.sh
-python3 efficient.py $1 > $2
+python3 efficient_3.py $1 $2
